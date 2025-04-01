@@ -23,7 +23,6 @@ gi := g18n.New(
 	g18n.WithOptions(
 		i18n.WithLanguages(language.English, language.German),
 		i18n.WithLoaders(
-			i18n.EmbedLoader(g18n.Localize, "./localize/"),
 			i18n.EmbedLoader(fs, "./localize/"),
 		),
 	),
@@ -31,8 +30,6 @@ gi := g18n.New(
 // apply i18n middleware
 r.Use(gi.Localize())
 ```
-
-> There are some built-in translations in [./localize](./localize), embedded in `g18n.Localize`
 
 ### Translate
 

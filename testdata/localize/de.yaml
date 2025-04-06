@@ -1,2 +1,3 @@
 welcome: 'hallo'
 welcomeWithName: 'hallo {{ .name }}'
+'hello {{ .name }}': 'hallo {{ .name }}'

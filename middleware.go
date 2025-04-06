@@ -13,7 +13,9 @@ func (i *I18n) Localize() gin.HandlerFunc {
 	i18 := i18n.New(i.options...)
 
 	return func(ctx *gin.Context) {
-		ctx.Set("i18n", i18)
-		ctx.Set("gin-i18n", i)
+		ctx.Set(i18nContextKey, i18)
+		ctx.Set(ginI18nContextKey, i)
+
+		ctx.Next()
 	}
 }

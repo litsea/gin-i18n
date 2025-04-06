@@ -1,8 +1,10 @@
 package i18n
 
 import (
+	"bytes"
 	"fmt"
 	"slices"
+	"text/template"
 
 	"github.com/gin-gonic/gin"
 	"github.com/litsea/i18n"
@@ -28,14 +30,21 @@ func New(opts ...Option) *I18n {
 }
 
 func T(ctx *gin.Context, msgID string, tplData ...map[any]any) string {
-	gi := ctx.Value("gin-i18n").(*I18n)
+	gi := getGinI18nFromContext(ctx)
+	if gi == nil {
+		return fallbackTranslate(msgID, tplData...)
+	}
 
 	return gi.T(ctx, msgID, tplData...)
 }
 
 func (i *I18n) T(ctx *gin.Context, msgID string, tplData ...map[any]any) string {
-	i18 := ctx.Value("i18n").(*i18n.I18n)
-	lng := GetCurrentLanguage(ctx)
+	i18 := getI18nFromContext(ctx)
+	if i18 == nil {
+		return fallbackTranslate(msgID, tplData...)
+	}
+
+	lng := i.GetCurrentLanguage(ctx)
 
 	msg, err := i18.Translate(lng, msgID, tplData...)
 	if err != nil && i.logger != nil {
@@ -50,7 +59,11 @@ func (i *I18n) GetCurrentLanguage(ctx *gin.Context) language.Tag {
 }
 
 func HasLanguage(ctx *gin.Context, l string) bool {
-	i := ctx.MustGet("i18n").(*i18n.I18n)
+	i := getI18nFromContext(ctx)
+	if i == nil {
+		return false
+	}
+
 	lng := language.Make(l)
 
 	if lng == i.GetDefaultLanguage() {
@@ -61,13 +74,41 @@ func HasLanguage(ctx *gin.Context, l string) bool {
 }
 
 func GetDefaultLanguage(ctx *gin.Context) language.Tag {
-	i := ctx.MustGet("i18n").(*i18n.I18n)
+	i := getI18nFromContext(ctx)
+	if i == nil {
+		return language.English
+	}
+
 	return i.GetDefaultLanguage()
 }
 
 func GetCurrentLanguage(ctx *gin.Context) language.Tag {
-	i := ctx.MustGet("gin-i18n").(*I18n)
-	return i.GetCurrentLanguage(ctx)
+	gi := getGinI18nFromContext(ctx)
+	if gi == nil {
+		return language.English
+	}
+
+	return gi.GetCurrentLanguage(ctx)
+}
+
+func fallbackTranslate(msgID string, tplData ...map[any]any) string {
+	tpl, err := template.New(msgID).Parse(msgID)
+	if err != nil {
+		return msgID
+	}
+
+	var data map[any]any
+	if len(tplData) > 0 {
+		data = tplData[0]
+	}
+
+	var buf bytes.Buffer
+	err = tpl.Execute(&buf, data)
+	if err != nil {
+		return msgID
+	}
+
+	return buf.String()
 }
 
 func defaultGetLngHandler(ctx *gin.Context) string {
@@ -75,7 +116,11 @@ func defaultGetLngHandler(ctx *gin.Context) string {
 		return language.English.String()
 	}
 
-	i := ctx.Value("i18n").(*i18n.I18n)
+	i := getI18nFromContext(ctx)
+	if i == nil {
+		return language.English.String()
+	}
+
 	ls := i.GetLanguages()
 	defaultLng := i.GetDefaultLanguage()
 

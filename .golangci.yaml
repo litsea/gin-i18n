@@ -209,9 +209,12 @@ formatters:
       # If `custom-order` is `true`, it follows the order of `sections` option.
       # Default: ["standard", "default"]
       sections:
-        - standard                       # Standard section: captures all standard packages.
-        - default                        # Default section: contains all imports that could not be matched to another section type.
-        - prefix(github.com/litsea/gin-i18n) # Custom section: groups all imports with the specified Prefix.
+        # Standard section: captures all standard packages.
+        - standard
+        # Default section: contains all imports that could not be matched to another section type.
+        - default
+        # Custom section: groups all imports with the specified Prefix.
+        - prefix(github.com/litsea/gin-i18n)
 
     gofumpt:
       # Module path which contains the source code being formatted.

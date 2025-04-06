@@ -207,7 +207,7 @@ func newServer(mw ...gin.HandlerFunc) *gin.Engine {
 }
 
 func makeRequest(lng language.Tag, path string) string {
-	req, _ := http.NewRequestWithContext(context.Background(), "GET", path, nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, path, http.NoBody)
 	req.Header.Add("Accept-Language", lng.String())
 
 	gi := New(
@@ -354,7 +354,7 @@ func TestNoI18nContext(t *testing.T) {
 }
 
 func makeRequestNoI18nContext(lng language.Tag, path string) string {
-	req, _ := http.NewRequestWithContext(context.Background(), "GET", path, nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, path, http.NoBody)
 	req.Header.Add("Accept-Language", lng.String())
 
 	w := httptest.NewRecorder()

@@ -1,0 +1,226 @@
+# This file contains all available configuration options
+# with their default values (in comments).
+
+# Defines the configuration version.
+# The only possible value is "2".
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  # Default set of linters.
+  # The value can be: `standard`, `all`, `none`, or `fast`.
+  # Default: standard
+  default: none
+
+  # Enable specific linter.
+  # https://golangci-lint.run/usage/linters/#enabled-by-default
+  enable:
+    - bodyclose
+    - copyloopvar
+    - depguard
+    - durationcheck
+    - errcheck
+    - errname
+    - exptostd
+    - forcetypeassert
+    - gocritic
+    - gosec
+    - govet
+    - ineffassign
+    - intrange
+    - ireturn
+    - makezero
+    - mirror
+    - nilerr
+    - noctx
+    - nolintlint
+    - prealloc
+    - predeclared
+    - rowserrcheck
+    - sqlclosecheck
+    - staticcheck
+    - unconvert
+    - unparam
+    - unused
+    - usestdlibvars
+    - usetesting
+    - wastedassign
+    - whitespace
+
+  settings:
+    depguard:
+      # Rules to apply.
+      rules:
+        # Name of a rule.
+        main:
+          deny:
+            - pkg: "math/rand$"
+              desc: use math/rand/v2
+            - pkg: "github.com/pkg/errors"
+              desc: Should be replaced by standard lib errors package
+            - pkg: io/ioutil
+              desc: The io/ioutil package has been deprecated, see https://go.dev/doc/go1.16#ioutil
+
+    gocritic:
+      # Disable all checks.
+      # Default: false
+      disable-all: true
+      # Which checks should be enabled in addition to default checks; can't be combined with 'disabled-checks'.
+      # By default, list of stable checks is used (https://go-critic.com/overview#checks-overview):
+      #   appendAssign, argOrder, assignOp, badCall, badCond, captLocal, caseOrder, codegenComment, commentFormatting,
+      #   defaultCaseOrder, deprecatedComment, dupArg, dupBranchBody, dupCase, dupSubExpr, elseif, exitAfterDefer,
+      #   flagDeref, flagName, ifElseChain, mapKey, newDeref, offBy1, regexpMust, singleCaseSwitch, sloppyLen,
+      #   sloppyTypeAssert, switchTrue, typeSwitchVar, underef, unlambda, unslice, valSwap, wrapperFunc
+      # To see which checks are enabled run `GL_DEBUG=gocritic golangci-lint run --enable=gocritic`.
+      enabled-checks:
+        # diagnostic
+        - appendAssign
+        - argOrder
+        - badCall
+        - badCond
+        # - badLock
+        - badRegexp
+        - badSorting
+        - badSyncOnceFunc
+        - caseOrder
+        - codegenComment
+        # - commentedOutCode
+        - deferInLoop
+        - deprecatedComment
+        - dupArg
+        - dupBranchBody
+        - dupCase
+        # - dupOption # (not supported yet)
+        - dupSubExpr
+        # - dynamicFmtString
+        - emptyDecl
+        - evalOrder
+        - exitAfterDefer
+        - externalErrorReassign
+        - filepathJoin
+        - flagDeref
+        - flagName
+        - mapKey
+        - nilValReturn
+        - offBy1
+        - rangeAppendAll
+        - regexpPattern
+        # - returnAfterHttpError
+        - sloppyLen
+        - sloppyTypeAssert
+        - sortSlice
+        # - sprintfQuotedString
+        - sqlQuery
+        - syncMapLoadAndDelete
+        - truncateCmp
+        - uncheckedInlineErr
+        - weakCond
+
+        # style
+        - assignOp
+        # - boolExprSimplify
+        - builtinShadow
+        - builtinShadowDecl
+        - captLocal
+        - commentFormatting
+        - commentedOutImport
+        - defaultCaseOrder
+        # - deferUnlambda
+        # - docStub
+        - dupImport
+        - elseif
+        - emptyFallthrough
+        - emptyStringTest
+        - exposedSyncMutex
+        # - hexLiteral
+        - httpNoBody
+        - ifElseChain
+        # - importShadow
+        # - initClause
+        - methodExprCall
+        - nestingReduce
+        - newDeref
+        - octalLiteral
+        - paramTypeCombine
+        - preferFilepathJoin
+        - ptrToRefParam
+        - redundantSprint
+        - regexpMust
+        # - regexpSimplify
+        # - ruleguard
+        - singleCaseSwitch
+        # - stringConcatSimplify
+        - stringsCompare
+        - switchTrue
+        - timeExprSimplify
+        # - todoCommentWithoutDetail
+        - tooManyResultsChecker
+        # - typeAssertChain
+        - typeDefFirst
+        - typeSwitchVar
+        - typeUnparen
+        - underef
+        # - unlabelStmt
+        - unlambda
+        # - unnamedResult
+        # - unnecessaryBlock
+        # - unnecessaryDefer
+        - unslice
+        - valSwap
+        # - whyNoLint
+        - wrapperFunc
+        - yodaStyleExpr
+
+        # performance
+        # - appendCombine
+        - equalFold
+        # - hugeParam
+        - indexAlloc
+        - preferDecodeRune
+        - preferFprint
+        - preferStringWriter
+        - preferWriteByte
+        # - rangeExprCopy
+        # - rangeValCopy
+        - sliceClear
+        # - stringXbytes
+
+    gosec:
+      excludes:
+        - G304 # G304: Potential file inclusion via variable.
+
+formatters:
+  # Enable specific formatter.
+  # Default: [] (uses standard Go formatting)
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+
+  # Formatters settings.
+  settings:
+    gci:
+      # Section configuration to compare against.
+      # Section names are case-insensitive and may contain parameters in ().
+      # The default order of sections is `standard > default > custom > blank > dot > alias > localmodule`,
+      # If `custom-order` is `true`, it follows the order of `sections` option.
+      # Default: ["standard", "default"]
+      sections:
+        - standard                       # Standard section: captures all standard packages.
+        - default                        # Default section: contains all imports that could not be matched to another section type.
+        - prefix(github.com/litsea/gin-i18n) # Custom section: groups all imports with the specified Prefix.
+
+    gofumpt:
+      # Module path which contains the source code being formatted.
+      # Default: ""
+      module-path: github.com/litsea/gin-i18n
+
+    goimports:
+      # A list of prefixes, which, if set, checks import paths
+      # with the given prefixes are grouped after 3rd-party packages.
+      # Default: []
+      local-prefixes:
+        - github.com/litsea/gin-i18n

@@ -6,9 +6,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	g18n "github.com/litsea/gin-i18n"
 	"github.com/litsea/i18n"
 	"golang.org/x/text/language"
+
+	g18n "github.com/litsea/gin-i18n"
 )
 
 //go:embed localize/*

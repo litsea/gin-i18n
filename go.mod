@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	github.com/gin-gonic/gin v1.10.1
-	github.com/litsea/i18n v0.2.0
+	github.com/litsea/i18n v0.2.1
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/text v0.27.0
 )

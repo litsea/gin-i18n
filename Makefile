@@ -16,6 +16,11 @@ lint: check-golangci-lint
 test: check-go
 lint-fix: check-golangci-lint
 
+.PHONY: update
+update: ## Update go.mod
+	go get -u -v ./...
+	go mod tidy -v
+
 .PHONY: vet
 vet: ## Run vet
 	go vet -race ./...
